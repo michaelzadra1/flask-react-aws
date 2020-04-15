@@ -12,10 +12,10 @@ phases:
    pre_build:
       commands:
          - echo logging in to ecr...
-         - $(aws ecr get-login --no-include-email --region $AWS_REGION)
-         - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test-driven-users:prod || true
-         - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test-driven-client:builder || true
-         - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test-driven-client:prod || true
+         - $(aws ecr get-login --no-include-email --region us-east-2)
+         - docker pull 510152631726.dkr.ecr.us-east-2.amazonaws.com/test-driven-users:prod || true
+         - docker pull 510152631726.dkr.ecr.us-east-2.amazonaws.com/test-driven-client:builder || true
+         - docker pull 510152631726.dkr.ecr.us-east-2.amazonaws.com/test-driven-client:prod || true
    build:
       commands:
          - echo building and testing dev images...
@@ -30,28 +30,28 @@ phases:
          - echo building prod images...
          - >
             docker build \
-              --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test-driven-users:prod \
+              --cache-from 510152631726.dkr.ecr.us-east-2.amazonaws.com/test-driven-users:prod \
               -f services/users/Dockerfile.prod \
-              -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test-driven-users:prod \
+              -t 510152631726.dkr.ecr.us-east-2.amazonaws.com/test-driven-users:prod \
               ./services/users
          - >
             docker build \
               --target builder \
-              --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test-driven-client:builder \
+              --cache-from 510152631726.dkr.ecr.us-east-2.amazonaws.com/test-driven-client:builder \
               -f services/client/Dockerfile.prod \
-              -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test-driven-client:builder \
+              -t 510152631726.dkr.ecr.us-east-2.amazonaws.com/test-driven-client:builder \
               --build-arg NODE_ENV=production \
               --build-arg REACT_APP_USERS_SERVICE_URL=$REACT_APP_USERS_SERVICE_URL \
               ./services/client
          - >
             docker build \
-              --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test-driven-client:prod \
+              --cache-from 510152631726.dkr.ecr.us-east-2.amazonaws.com/test-driven-client:prod \
               -f services/client/Dockerfile.prod \
-              -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test-driven-client:prod \
+              -t 510152631726.dkr.ecr.us-east-2.amazonaws.com/test-driven-client:prod \
               ./services/client
    post_build:
       commands:
          - echo pushing prod images to ecr...
-         - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test-driven-users:prod
-         - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test-driven-client:builder
-         - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/test-driven-client:prod
+         - docker push 510152631726.dkr.ecr.us-east-2.amazonaws.com/test-driven-users:prod
+         - docker push 510152631726.dkr.ecr.us-east-2.amazonaws.com/test-driven-client:builder
+         - docker push 510152631726.dkr.ecr.us-east-2.amazonaws.com/test-driven-client:prod
